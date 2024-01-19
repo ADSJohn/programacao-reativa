@@ -1,0 +1,4 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://boracodardevs:<password>@programacaoreativaclust.lvecuyh.mongodb.net/?retryWrites=true&w=majority
