@@ -1,4 +1,4 @@
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://boracodardevs:<password>@programacaoreativaclust.lvecuyh.mongodb.net/?retryWrites=true&w=majority
+      uri: mongodb+srv://${DB_USER:boracodardevs}:${DB_PASSWORD:programacaoreativa}@programacaoreativaclust.lvecuyh.mongodb.net/programacaoreativa?retryWrites=true&w=majority
