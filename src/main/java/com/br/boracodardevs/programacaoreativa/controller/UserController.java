@@ -1,7 +1,7 @@
-package controller;
+package com.br.boracodardevs.programacaoreativa.controller;
 
-import model.request.UserRequest;
-import model.response.UserResponse;
+import com.br.boracodardevs.programacaoreativa.model.request.UserRequest;
+import com.br.boracodardevs.programacaoreativa.model.response.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;

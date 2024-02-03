@@ -1,4 +1,4 @@
-package entity;
+package com.br.boracodardevs.programacaoreativa.entity;
 
 import lombok.Builder;
 import lombok.Data;

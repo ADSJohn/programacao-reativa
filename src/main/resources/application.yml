@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://${DB_USER:boracodardevs}:${DB_PASSWORD:programacaoreativa}@programacaoreativaclust.lvecuyh.mongodb.net/programacaoreativa?retryWrites=true&w=majority
+      uri: mongodb+srv://${DB_USER:boracodardevs}:${DB_PASSWORD:boracodardevs}@programacaoreativaclust.lvecuyh.mongodb.net/programacaoreativa?retryWrites=true&w=majority
       auto-index-creation: true
-  aplication:
-    name: "Programacao reativa"
+  application:
+    name: "programacao-reativa"
