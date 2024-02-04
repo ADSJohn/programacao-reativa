@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class StandardError implements Serializable {
 
 	@Serial
-	private static final long serialversionUUID = 1L;
+	private static final long serialversionUID = 1L;
 
 	private LocalDateTime timestamp;
 	private String path;

@@ -4,8 +4,10 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.support.WebExchangeBindException;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
@@ -23,6 +25,21 @@ public class ControllerExceptionHandler {
 										.message(verifyDumpKey(ex.getMessage()))
 										.path(request.getPath().toString())
 										.build()));
+	}
+
+	@ExceptionHandler(WebExchangeBindException.class)
+	public ResponseEntity<Mono<ValidationError>> validationError(WebExchangeBindException ex, ServerHttpRequest request) {
+		ValidationError error = new ValidationError(
+						LocalDateTime.now(),
+						request.getPath().toString(),
+						HttpStatus.BAD_REQUEST.value(),
+						"Validation error",
+						"Error on validation attributes");
+
+		for (FieldError err : ex.getFieldErrors()) {
+			error.addError(err.getField(), err.getDefaultMessage());
+		}
+		return ResponseEntity.badRequest().body(Mono.just(error));
 	}
 
 	private String verifyDumpKey(String message) {
