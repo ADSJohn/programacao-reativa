@@ -29,11 +29,16 @@ public class UserService {
 	}
 
 	public Mono<User> findById(final String id) {
-		return repository.findbById(id)
-						.switchIfEmpty(Mono.error(new ObjectNotFoundException(format("Object not found. Id: %s Type: %s ", id, User.class.getSimpleName()))));
+		return repository.findbById(id).switchIfEmpty(Mono.error(new ObjectNotFoundException(format("Object not found. Id: %s Type: %s ", id, User.class.getSimpleName()))));
 	}
 
 	public Flux<User> findAll() {
 		return repository.findAll();
+	}
+
+	public Mono<User> update(String id, UserRequest request) {
+		return findById(id)
+						.map(entity -> mapper.toEntity(request, entity))
+						.flatMap(repository::save);
 	}
 }
