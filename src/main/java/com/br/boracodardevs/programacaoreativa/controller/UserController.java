@@ -22,6 +22,6 @@ public interface UserController {
 	@PatchMapping(value = "/{id}")
 	ResponseEntity<Mono<UserResponse>> update(@PathVariable String id, @RequestBody UserRequest request);
 
-	@DeleteMapping
+	@DeleteMapping(value = "/{id}")
 	ResponseEntity<Mono<Void>> delete(@PathVariable String id);
 }
