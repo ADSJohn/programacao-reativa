@@ -1,6 +1,7 @@
 package com.br.boracodardevs.programacaoreativa.controller.impl;
 
 import com.br.boracodardevs.programacaoreativa.controller.UserController;
+import com.br.boracodardevs.programacaoreativa.mapper.UserMapper;
 import com.br.boracodardevs.programacaoreativa.model.request.UserRequest;
 import com.br.boracodardevs.programacaoreativa.model.response.UserResponse;
 import com.br.boracodardevs.programacaoreativa.service.UserService;
@@ -21,14 +22,17 @@ public class UserControllerImpl implements UserController {
 	@Autowired
 	private UserService service;
 
+	@Autowired
+	private UserMapper mapper;
+
 	@Override
 	public ResponseEntity<Mono<Void>> save(final UserRequest request) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(service.save(request).then());
 	}
 
 	@Override
-	public ResponseEntity<Mono<UserResponse>> find(String id) {
-		return null;
+	public ResponseEntity<Mono<UserResponse>> findById(String id) {
+		return ResponseEntity.ok().body(service.findById(id).map(mapper::toResponse));
 	}
 
 	@Override

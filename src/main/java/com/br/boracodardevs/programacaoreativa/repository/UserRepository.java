@@ -15,6 +15,10 @@ public class UserRepository {
 	private ReactiveMongoTemplate mongoTemplate;
 
 	public Mono<User> save(final User user) {
-		return  mongoTemplate.save(user);
+		return mongoTemplate.save(user);
+	}
+
+	public Mono<User> findbById(String id) {
+		return mongoTemplate.findById(id, User.class);
 	}
 }
