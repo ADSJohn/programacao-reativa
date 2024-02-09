@@ -38,8 +38,8 @@ public class UserService {
 
 	public Mono<User> update(String id, UserRequest request) {
 		return findById(id)
-						.map(entity -> mapper.toEntity(request, entity))
-						.flatMap(repository::save);
+			.map(entity -> mapper.toEntity(request, entity))
+			.flatMap(repository::save);
 	}
 
 	public Mono<User> delete(final String id) {
@@ -48,8 +48,8 @@ public class UserService {
 
 	private <T> Mono<T> handleNotFound(Mono<T> mono, String id) {
 		return mono.switchIfEmpty(
-						Mono.error(new ObjectNotFoundException(
-										format("Object not found. Id: %s Type: %s ", id, User.class.getSimpleName()))));
+			Mono.error(new ObjectNotFoundException(
+				format("Object not found. Id: %s Type: %s ", id, User.class.getSimpleName()))));
 
 	}
 }
