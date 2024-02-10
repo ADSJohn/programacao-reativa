@@ -26,6 +26,11 @@ import reactor.core.publisher.Mono;
 @AutoConfigureWebTestClient
 class UserControllerImplTest {
 
+	public static final String ID = "1234";
+	public static final String NAME = "Dev John";
+	public static final String EMAIL = "devjohn@email.com";
+	public static final String PASSWORD = "123";
+
 	@Autowired
 	private WebTestClient webTestClient;
 
@@ -38,7 +43,7 @@ class UserControllerImplTest {
 	@Test
 	@DisplayName("Test endpoint save with success")
 	void testSave() {
-		UserRequest request = new UserRequest("Dev John", "devjohn@email.com", "123");
+		UserRequest request = new UserRequest(NAME, EMAIL, PASSWORD);
 
 		Mockito.when(service.save(ArgumentMatchers.any(UserRequest.class))).thenReturn(Mono.just(User.builder().build()));
 
@@ -56,7 +61,7 @@ class UserControllerImplTest {
 	@Test
 	@DisplayName("Test endpoint save with badrequest")
 	void testSaveWithBadRequest() {
-		UserRequest request = new UserRequest(" Dev John", "devjohn@email.com", "123");
+		UserRequest request = new UserRequest(NAME.concat(" "), EMAIL, PASSWORD);
 
 		webTestClient.post()
 			.uri("/users")
@@ -77,22 +82,21 @@ class UserControllerImplTest {
 	@Test
 	@DisplayName("Teste find by id endpoint with success")
 	void testFindById() {
-		final var id = "1234";
-		final var userResponse = new UserResponse(id, "Dev John", "devjohn@email.com", "123");
+		final var userResponse = new UserResponse(ID, NAME, EMAIL, PASSWORD);
 
 		Mockito.when(service.findById(ArgumentMatchers.anyString())).thenReturn(Mono.just(User.builder().build()));
 		Mockito.when(mapper.toResponse(ArgumentMatchers.any(User.class))).thenReturn(userResponse);
 
 		webTestClient.get()
-			.uri("/users/" + id)
+			.uri("/users/" + ID)
 			.accept(MediaType.APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody()
-			.jsonPath("$.id").isEqualTo(id)
-			.jsonPath("$.name").isEqualTo("Dev John")
-			.jsonPath("$.email").isEqualTo("devjohn@email.com")
-			.jsonPath("$.password").isEqualTo("123");
+			.jsonPath("$.id").isEqualTo(ID)
+			.jsonPath("$.name").isEqualTo(NAME)
+			.jsonPath("$.email").isEqualTo(EMAIL)
+			.jsonPath("$.password").isEqualTo(PASSWORD);
 	}
 
 	@Test
