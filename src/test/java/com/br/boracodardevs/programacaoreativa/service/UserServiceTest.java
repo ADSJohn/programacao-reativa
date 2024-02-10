@@ -94,4 +94,20 @@ class UserServiceTest {
 
 		Mockito.verify(repository, Mockito.times(1)).save(Mockito.any(User.class));
 	}
+
+	@Test
+	void deleteTest() {
+		User entity = User.builder().build();
+
+		Mockito.when(repository.findAndRemove(ArgumentMatchers.anyString())).thenReturn(Mono.just(entity));
+
+		Mono<User> result = service.delete("123");
+
+		StepVerifier.create(result)
+			.expectNextMatches(user -> user.getClass() == User.class)
+			.expectComplete()
+			.verify();
+
+		Mockito.verify(repository, Mockito.times(1)).findAndRemove(ArgumentMatchers.anyString());
+	}
 }
