@@ -4,6 +4,8 @@ import com.br.boracodardevs.programacaoreativa.entity.User;
 import com.br.boracodardevs.programacaoreativa.mapper.UserMapper;
 import com.br.boracodardevs.programacaoreativa.model.request.UserRequest;
 import com.br.boracodardevs.programacaoreativa.repository.UserRepository;
+import com.br.boracodardevs.programacaoreativa.service.exception.ObjectNotFoundException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -14,6 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+
+import static java.lang.String.format;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -46,7 +50,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	void findByIdTest() {
+	void testFindById() {
 		Mockito.when(repository.findbById(ArgumentMatchers.anyString()))
 			.thenReturn(Mono.just(User.builder().build()));
 
@@ -61,7 +65,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	void findAllTest() {
+	void testFindAll() {
 		Mockito.when(repository.findAll()).thenReturn(Flux.just(User.builder().build()));
 
 		Flux<User> result = service.findAll();
@@ -75,7 +79,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	void updateTest() {
+	void testUpdate() {
 
 		UserRequest request = new UserRequest("Dev John", "devjohn@email.com", "123");
 		User entity = User.builder().build();
@@ -96,7 +100,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	void deleteTest() {
+	void testDelete() {
 		User entity = User.builder().build();
 
 		Mockito.when(repository.findAndRemove(ArgumentMatchers.anyString())).thenReturn(Mono.just(entity));
@@ -109,5 +113,16 @@ class UserServiceTest {
 			.verify();
 
 		Mockito.verify(repository, Mockito.times(1)).findAndRemove(ArgumentMatchers.anyString());
+	}
+
+	@Test
+	void testObjectNotFoundException() {
+		Mockito.when(repository.findbById(ArgumentMatchers.anyString())).thenReturn(Mono.empty());
+		try {
+			service.findById("123").block();
+		} catch (Exception ex) {
+			Assertions.assertEquals(ObjectNotFoundException.class, ex.getClass());
+			Assertions.assertEquals(format("Object not found. Id: %s Type: %s ", "123", User.class.getSimpleName()), ex.getMessage());
+		}
 	}
 }

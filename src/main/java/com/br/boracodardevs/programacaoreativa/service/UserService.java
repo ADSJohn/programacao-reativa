@@ -23,7 +23,6 @@ public class UserService {
 	@Autowired
 	private UserMapper mapper;
 
-
 	public Mono<User> save(final UserRequest request) {
 		return repository.save(mapper.toEntity(request));
 	}
@@ -50,6 +49,5 @@ public class UserService {
 		return mono.switchIfEmpty(
 			Mono.error(new ObjectNotFoundException(
 				format("Object not found. Id: %s Type: %s ", id, User.class.getSimpleName()))));
-
 	}
 }
