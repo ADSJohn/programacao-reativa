@@ -1,7 +1,9 @@
 package com.br.boracodardevs.programacaoreativa.controller;
 
 import com.br.boracodardevs.programacaoreativa.entity.User;
+import com.br.boracodardevs.programacaoreativa.mapper.UserMapper;
 import com.br.boracodardevs.programacaoreativa.model.request.UserRequest;
+import com.br.boracodardevs.programacaoreativa.model.response.UserResponse;
 import com.br.boracodardevs.programacaoreativa.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,9 @@ class UserControllerImplTest {
 
 	@Autowired
 	private WebTestClient webTestClient;
+
+	@MockBean
+	private UserMapper mapper;
 
 	@MockBean
 	private UserService service;
@@ -70,7 +75,24 @@ class UserControllerImplTest {
 	}
 
 	@Test
-	void findById() {
+	@DisplayName("Teste find by id endpoint with success")
+	void testFindById() {
+		final var id = "1234";
+		final var userResponse = new UserResponse(id, "Dev John", "devjohn@email.com", "123");
+
+		Mockito.when(service.findById(ArgumentMatchers.anyString())).thenReturn(Mono.just(User.builder().build()));
+		Mockito.when(mapper.toResponse(ArgumentMatchers.any(User.class))).thenReturn(userResponse);
+
+		webTestClient.get()
+			.uri("/users/" + id)
+			.accept(MediaType.APPLICATION_JSON)
+			.exchange()
+			.expectStatus().isOk()
+			.expectBody()
+			.jsonPath("$.id").isEqualTo(id)
+			.jsonPath("$.name").isEqualTo("Dev John")
+			.jsonPath("$.email").isEqualTo("devjohn@email.com")
+			.jsonPath("$.password").isEqualTo("123");
 	}
 
 	@Test
