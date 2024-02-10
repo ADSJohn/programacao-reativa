@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -45,6 +46,27 @@ class UserControllerImplTest {
 			.isCreated();
 
 		Mockito.verify(service).save(ArgumentMatchers.any(UserRequest.class));
+	}
+
+	@Test
+	@DisplayName("Test endpoint save with badrequest")
+	void testSaveWithBadRequest() {
+		UserRequest request = new UserRequest(" Dev John", "devjohn@email.com", "123");
+
+		webTestClient.post()
+			.uri("/users")
+			.contentType(MediaType.APPLICATION_JSON)
+			.body(BodyInserters.fromValue(request))
+			.exchange()
+			.expectStatus()
+			.isBadRequest()
+			.expectBody()
+			.jsonPath("$.path").isEqualTo("/users")
+			.jsonPath("$.status").isEqualTo(HttpStatus.BAD_REQUEST.value())
+			.jsonPath("$.error").isEqualTo("Validation error")
+			.jsonPath("$.message").isEqualTo("Error on validation attributes")
+			.jsonPath("$.errorList[0].fieldName").isEqualTo("name")
+			.jsonPath("$.errorList[0].message").isEqualTo("{field cannot have blank espaces at the beginning or at end}");
 	}
 
 	@Test
