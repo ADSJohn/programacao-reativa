@@ -42,8 +42,8 @@ class UserControllerImplTest {
 	private UserService service;
 
 	@Test
-	@DisplayName("Test endpoint save with success")
-	void testSave() {
+	@DisplayName("Test save endpoint with success")
+	void testSaveWithSuccess() {
 		UserRequest request = new UserRequest(NAME, EMAIL, PASSWORD);
 
 		Mockito.when(service.save(ArgumentMatchers.any(UserRequest.class))).thenReturn(Mono.just(User.builder().build()));
@@ -60,7 +60,7 @@ class UserControllerImplTest {
 	}
 
 	@Test
-	@DisplayName("Test endpoint save with badrequest")
+	@DisplayName("Test save endpoint with badrequest")
 	void testSaveWithBadRequest() {
 		UserRequest request = new UserRequest(NAME.concat(" "), EMAIL, PASSWORD);
 
@@ -81,8 +81,8 @@ class UserControllerImplTest {
 	}
 
 	@Test
-	@DisplayName("Teste find by id endpoint with success")
-	void testFindById() {
+	@DisplayName("Test find by id endpoint with success")
+	void testFindByIdWithSuccess() {
 		final var userResponse = new UserResponse(ID, NAME, EMAIL, PASSWORD);
 
 		Mockito.when(service.findById(ArgumentMatchers.anyString())).thenReturn(Mono.just(User.builder().build()));
@@ -104,8 +104,8 @@ class UserControllerImplTest {
 	}
 
 	@Test
-	@DisplayName("Test update endpoint with success")
-	void testFindAll() {
+	@DisplayName("Test find all endpoint with success")
+	void testFindAllWithSuccess() {
 		final var userResponse = new UserResponse(ID, NAME, EMAIL, PASSWORD);
 
 		Mockito.when(service.findAll()).thenReturn(Flux.just(User.builder().build()));
@@ -127,8 +127,8 @@ class UserControllerImplTest {
 	}
 
 	@Test
-	void testUpdate() {
-
+	@DisplayName("Test update endpoint with success")
+	void testUpdateWithSuccess() {
 		final var userRequest = new UserRequest(NAME, EMAIL, PASSWORD);
 		final var userResponse = new UserResponse(ID, NAME, EMAIL, PASSWORD);
 
@@ -155,6 +155,16 @@ class UserControllerImplTest {
 	}
 
 	@Test
-	void delete() {
+	@DisplayName("Test delete endpoint with success")
+	void testDeleteWithSuccess() {
+
+		Mockito.when(service.delete(ArgumentMatchers.anyString())).thenReturn(Mono.just(User.builder().build()));
+
+		webTestClient.delete()
+			.uri("/users/" + ID)
+			.exchange()
+			.expectStatus().isOk();
+
+		Mockito.verify(service).delete(ArgumentMatchers.anyString());
 	}
 }
