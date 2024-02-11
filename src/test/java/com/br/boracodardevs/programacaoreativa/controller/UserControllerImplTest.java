@@ -27,10 +27,11 @@ import reactor.core.publisher.Mono;
 @AutoConfigureWebTestClient
 class UserControllerImplTest {
 
-	public static final String ID = "1234";
-	public static final String NAME = "Dev John";
-	public static final String EMAIL = "devjohn@email.com";
-	public static final String PASSWORD = "123";
+	private static final String ID = "1234";
+	private static final String NAME = "Dev John";
+	private static final String EMAIL = "devjohn@email.com";
+	private static final String PASSWORD = "123";
+	private static final String BASE_URI = "/users";
 
 	@Autowired
 	private WebTestClient webTestClient;
@@ -49,7 +50,7 @@ class UserControllerImplTest {
 		Mockito.when(service.save(ArgumentMatchers.any(UserRequest.class))).thenReturn(Mono.just(User.builder().build()));
 
 		webTestClient.post()
-			.uri("/users")
+			.uri(BASE_URI )
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(BodyInserters.fromValue(request))
 			.exchange()
@@ -65,14 +66,14 @@ class UserControllerImplTest {
 		UserRequest request = new UserRequest(NAME.concat(" "), EMAIL, PASSWORD);
 
 		webTestClient.post()
-			.uri("/users")
+			.uri(BASE_URI )
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(BodyInserters.fromValue(request))
 			.exchange()
 			.expectStatus()
 			.isBadRequest()
 			.expectBody()
-			.jsonPath("$.path").isEqualTo("/users")
+			.jsonPath("$.path").isEqualTo(BASE_URI)
 			.jsonPath("$.status").isEqualTo(HttpStatus.BAD_REQUEST.value())
 			.jsonPath("$.error").isEqualTo("Validation error")
 			.jsonPath("$.message").isEqualTo("Error on validation attributes")
@@ -89,7 +90,7 @@ class UserControllerImplTest {
 		Mockito.when(mapper.toResponse(ArgumentMatchers.any(User.class))).thenReturn(userResponse);
 
 		webTestClient.get()
-			.uri("/users/" + ID)
+			.uri(BASE_URI + "/" + ID)
 			.accept(MediaType.APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isOk()
@@ -112,7 +113,7 @@ class UserControllerImplTest {
 		Mockito.when(mapper.toResponse(ArgumentMatchers.any(User.class))).thenReturn(userResponse);
 
 		webTestClient.get()
-			.uri("/users")
+			.uri(BASE_URI )
 			.accept(MediaType.APPLICATION_JSON)
 			.exchange()
 			.expectStatus().isOk()
@@ -138,7 +139,7 @@ class UserControllerImplTest {
 		Mockito.when(mapper.toResponse(ArgumentMatchers.any(User.class))).thenReturn(userResponse);
 
 		webTestClient.patch()
-			.uri("/users/" + ID)
+			.uri(BASE_URI + "/" + ID)
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(BodyInserters.fromValue(userRequest))
 			.exchange()
@@ -161,7 +162,7 @@ class UserControllerImplTest {
 		Mockito.when(service.delete(ArgumentMatchers.anyString())).thenReturn(Mono.just(User.builder().build()));
 
 		webTestClient.delete()
-			.uri("/users/" + ID)
+			.uri(BASE_URI + "/" + ID)
 			.exchange()
 			.expectStatus().isOk();
 
